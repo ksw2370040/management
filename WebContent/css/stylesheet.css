@@ -1,0 +1,25 @@
+.border{
+	float:left;
+	border-right: solid #000;
+	height:100vh;
+	max-height:100%;
+	left: 15%;
+	border:1px solid;
+}
+.menu{
+	float:left;
+	margin-right:10%;
+	display: inline-block;
+	position: relative;
+}
+.main{
+	float: left;
+	margin-left:10px;
+	display: inline-block;
+	position: relative;
+	top:10px;
+}
+#radius{
+	border:1px solid;
+	border-radius: 2px;
+}
