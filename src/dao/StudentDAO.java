@@ -12,94 +12,110 @@ import javax.servlet.http.HttpServletResponse;
 import bean.Student;
 
 public class StudentDAO extends DAO{
-	// 指定された学生名を含む学生情報を検索する
-	public List<Student> search(String student_name)throws Exception{
-		List<Student> list=new ArrayList<>();
 
-		Connection con=getConnection();
+    // 指定された学生名を含む学生情報を検索する
+    public List<Student> search(String student_name) throws Exception {
+        List<Student> list = new ArrayList<>();
 
-		PreparedStatement st= con.prepareStatement(
-				"select * from student where student_name like ?");
-		st.setString(1,"%"+student_name+"%");
-		ResultSet rs=st.executeQuery();
+        // データベース接続を取得
+        Connection con = getConnection();
 
-		while (rs.next()){
-			Student p=new Student();
-			p.setstudent_id(rs.getInt("student_id"));
-			p.setstudent_name(rs.getString("student_name"));
-			p.setcourse_id(rs.getString("course_id"));
-			list.add(p);
-		}
-		st.close();
-		con.close();
-		return list;
-	}
-	// 新しい学生情報を追加する
-	public int insert(Student student)throws Exception{
+        // 学生名を含む学生情報を検索するためのSQL文を準備
+        PreparedStatement st = con.prepareStatement(
+                "select * from student where student_name like ?");
+        st.setString(1, "%" + student_name + "%"); // プレースホルダーに値をセット
+        ResultSet rs = st.executeQuery(); // クエリを実行
 
-		Connection con=getConnection();
+        // 検索結果をリストに追加
+        while (rs.next()) {
+            Student p = new Student();
+            p.setstudent_id(rs.getInt("student_id"));
+            p.setstudent_name(rs.getString("student_name"));
+            p.setcourse_id(rs.getString("course_id"));
+            list.add(p);
+        }
+        st.close(); // ステートメントをクローズ
+        con.close(); // 接続をクローズ
+        return list;
+    }
 
-		PreparedStatement st=con.prepareStatement("insert into student values(?, ?, ?)");
+    // 新しい学生情報を追加する
+    public int insert(Student student) throws Exception {
 
-		st.setInt(1,student.getstudent_id());
-		st.setString(2,student.getstudent_name());
-		st.setString(3, student.getcourse_id());
+        // データベース接続を取得
+        Connection con = getConnection();
 
-		int line=st.executeUpdate();
+        // 学生情報を追加するためのSQL文を準備
+        PreparedStatement st = con.prepareStatement("insert into student values(?, ?, ?)");
 
-		st.close();
-		con.close();
-		return line;
-	}
-	// 全ての学生情報を取得する
-	public List<Student> GetList (
-			HttpServletRequest request, HttpServletResponse response
-	) throws Exception{
-		List<Student> list=new ArrayList<>();
+        st.setInt(1, student.getstudent_id()); // プレースホルダーに値をセット
+        st.setString(2, student.getstudent_name());
+        st.setString(3, student.getcourse_id());
 
-		Connection con=getConnection();
+        int line = st.executeUpdate(); // クエリを実行
 
-		PreparedStatement st=con.prepareStatement("select s.student_id, s.student_name, c.course_name from student s join course c on s.course_id = c.course_id");
+        st.close(); // ステートメントをクローズ
+        con.close(); // 接続をクローズ
+        return line;
+    }
 
-		ResultSet rs=st.executeQuery();
+    // 全ての学生情報を取得する
+    public List<Student> GetList(
+            HttpServletRequest request, HttpServletResponse response
+    ) throws Exception {
+        List<Student> list = new ArrayList<>();
 
-	    while (rs.next()) {
-	        Student p = new Student();
-	        p.setstudent_id(rs.getInt("student_id"));
-	        p.setstudent_name(rs.getString("student_name"));
-	        p.setcourse_name(rs.getString("course_name"));
-	        list.add(p);
-	    }
-		st.close();
-		con.close();
-		return list;
-	}
-	// 指定された学生情報を更新する
-	public int update(Student student)throws Exception{
-		Connection con=getConnection();
+        // データベース接続を取得
+        Connection con = getConnection();
 
-		PreparedStatement st=con.prepareStatement("update student set student_name = ?, course_id = ? where student_id = ?");
+        // 全ての学生情報を取得するためのSQL文を準備
+        PreparedStatement st = con.prepareStatement("select s.student_id, s.student_name, c.course_name from student s join course c on s.course_id = c.course_id");
 
-		st.setString(1,student.getstudent_name());
-		st.setString(2, student.getcourse_id());
-		st.setInt(3, student.getstudent_id());
-		int line=st.executeUpdate();
+        ResultSet rs = st.executeQuery(); // クエリを実行
 
-		st.close();
-		con.close();
-		return line;
-	}
-	// 指定された学生名を持つ学生情報を削除する
-	public void delete(String student_name) throws Exception {
-		Connection con = getConnection();
+        // 検索結果をリストに追加
+        while (rs.next()) {
+            Student p = new Student();
+            p.setstudent_id(rs.getInt("student_id"));
+            p.setstudent_name(rs.getString("student_name"));
+            p.setcourse_name(rs.getString("course_name"));
+            list.add(p);
+        }
+        st.close(); // ステートメントをクローズ
+        con.close(); // 接続をクローズ
+        return list;
+    }
 
-		PreparedStatement st = con.prepareStatement("DELETE FROM student WHERE student_name = ?");
+    // 指定された学生情報を更新する
+    public int update(Student student) throws Exception {
+        // データベース接続を取得
+        Connection con = getConnection();
 
-		st.setString(1, student_name);
-		st.executeUpdate();
+        // 学生情報を更新するためのSQL文を準備
+        PreparedStatement st = con.prepareStatement("update student set student_name = ?, course_id = ? where student_id = ?");
 
-		st.close();
-		con.close();
-	    }
+        st.setString(1, student.getstudent_name()); // プレースホルダーに値をセット
+        st.setString(2, student.getcourse_id());
+        st.setInt(3, student.getstudent_id());
+        int line = st.executeUpdate(); // クエリを実行
 
+        st.close(); // ステートメントをクローズ
+        con.close(); // 接続をクローズ
+        return line;
+    }
+
+    // 指定された学生名を持つ学生情報を削除する
+    public void delete(String student_name) throws Exception {
+        // データベース接続を取得
+        Connection con = getConnection();
+
+        // 学生情報を削除するためのSQL文を準備
+        PreparedStatement st = con.prepareStatement("DELETE FROM student WHERE student_name = ?");
+
+        st.setString(1, student_name); // プレースホルダーに値をセット
+        st.executeUpdate(); // クエリを実行
+
+        st.close(); // ステートメントをクローズ
+        con.close(); // 接続をクローズ
+    }
 }

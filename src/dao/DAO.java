@@ -6,13 +6,14 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 public class DAO {
-	static DataSource ds;
+    static DataSource ds; // データソースの静的フィールド
 
-	 public Connection getConnection() throws Exception{
-		 if (ds==null){
-			 InitialContext ic=new InitialContext();
-			 ds=(DataSource)ic.lookup("java:/comp/env/jdbc/kadai");
-		 }
-		 return ds.getConnection();
-	 }
+    // データベース接続を取得するメソッド
+    public Connection getConnection() throws Exception {
+        if (ds == null) { // データソースがまだ初期化されていない場合
+            InitialContext ic = new InitialContext(); // 初期コンテキストを取得
+            ds = (DataSource) ic.lookup("java:/comp/env/jdbc/kadai"); // データソースをJNDIルックアップ
+        }
+        return ds.getConnection(); // データソースから接続を取得して返す
+    }
 }
